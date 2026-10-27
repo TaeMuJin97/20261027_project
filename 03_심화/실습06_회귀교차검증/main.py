@@ -33,12 +33,15 @@ candidates = [("Tree", DecisionTreeRegressor(max_depth=3, min_samples_leaf=3, ra
 rows, detail = [], []
 for name, estimator in candidates:
     model = build_model(estimator)
-    # TODO C06a: 회귀 정답으로 neg_root_mean_squared_error 점수를 구하세요.
-    negative = None
-    # TODO 끝
-    # TODO C06b: 음수 scorer 값을 양수 RMSE로 되돌리세요.
-    rmse = negative
-    # TODO 끝
+    # 해설 C06a: 회귀 정답으로 neg_root_mean_squared_error 점수를 구하세요.
+    # scikit-learn scorer는 큰 값이 좋도록 부호를 바꿉니다. 이 반환값 자체를 양의 ms 오차로 읽지 않습니다.
+    negative = cross_val_score(model, X_train, train["elapsed_ms"], cv=folds,
+                               scoring="neg_root_mean_squared_error", n_jobs=1)
+    # 해설 끝
+    # 해설 C06b: 음수 scorer 값을 양수 RMSE로 되돌리세요.
+    # 각 fold의 부호를 한 번 바꾸고 평균을 냅니다. 표준편차는 신뢰구간이 아닙니다.
+    rmse = -negative
+    # 해설 끝
     rows.append({"model": name, "CV_RMSE_ms": rmse.mean(), "CV_std_ms": rmse.std()})
     for number, value in enumerate(rmse, start=1):
         detail.append({"model": name, "fold": number, "fit_n": 48, "evaluate_n": 12, "RMSE_ms": value})

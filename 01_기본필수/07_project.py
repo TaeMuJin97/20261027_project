@@ -39,11 +39,11 @@ for name, estimator in candidates:
     # 제공: 전처리까지 Pipeline에 포함하여 fold 학습 부분에서만 fit하게 합니다.
     model = Pipeline([("pre", clone(pre)), ("model", estimator)])
     # TODO B07a: 전처리까지 연결한 model을 train에서 교차검증하세요.
-    scores = None
+    scores = cross_val_score(model, X_train, y_train, cv=folds, scoring="f1", n_jobs=1)
     # TODO 끝
     # TODO B07b: 전체 train으로 학습하고 valid를 예측하세요.
-    pass
-    prediction = None
+    model.fit(X_train, y_train)
+    prediction = model.predict(valid)
     # TODO 끝
     rows.append({"model": name, "CV_F1": scores.mean(),
                  "CV_std": scores.std(), "valid_F1": f1_score(y_valid, prediction, zero_division=0)})

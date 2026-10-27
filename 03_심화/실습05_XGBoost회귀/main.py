@@ -27,10 +27,11 @@ estimator = XGBRegressor(n_estimators=80, max_depth=2, learning_rate=0.05,
                   objective="reg:squarederror", eval_metric="rmse",
                   tree_method="hist", device="cpu", random_state=42, n_jobs=1)
 model = build_model(estimator)
-# TODO C05: 회귀 정답 elapsed_ms로 학습하고 valid를 예측하세요.
-pass
-prediction = None
-# TODO 끝
+# 해설 C05: 회귀 정답 elapsed_ms로 학습하고 valid를 예측하세요.
+# 앞 실습과 같은 입력·분할을 사용합니다. objective만 보고 정답 failed를 그대로 쓰는 실수를 피합니다.
+model.fit(X_train, train["elapsed_ms"])
+prediction = model.predict(X_valid)
+# 해설 끝
 result = pd.DataFrame([{"model": "XGB", "MAE_ms": mean_absolute_error(valid["elapsed_ms"], prediction),
                        "RMSE_ms": root_mean_squared_error(valid["elapsed_ms"], prediction)}])
 result.to_csv(OUT / "xgb_regression.csv", index=False, encoding="utf-8-sig")
