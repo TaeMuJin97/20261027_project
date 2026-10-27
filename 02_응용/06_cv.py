@@ -45,7 +45,8 @@ rows = []
 for name, estimator in candidates:
     model = Pipeline([("pre", clone(pre)), ("model", estimator)])
     # TODO A06: 전처리까지 포함한 model의 fold별 F1을 계산하세요.
-    scores = None
+    # 전처리를 먼저 fit_transform하지 않습니다. Pipeline을 전달하면 fold의 학습48건 안에서 통계를 배웁니다.
+    scores = cross_val_score(model, X_train, y_train, cv=folds, scoring="f1", n_jobs=1)
     # TODO 끝
     print(name, "fold F1:", scores.round(4).tolist(), "평균:", round(scores.mean(), 4), "표준편차:", round(scores.std(), 4))
     for number, value in enumerate(scores, start=1):
